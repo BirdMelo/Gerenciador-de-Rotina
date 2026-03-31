@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template
 from .config import Config
-from .extensions import db, migrate
+from .extentions import db, migrate
 
 def create_app():
     app = Flask(__name__)
@@ -17,7 +17,7 @@ def create_app():
     from .blueprints.tickets import bp as tickets_bp
     from .blueprints.users import bp as users_bp
 
-    app.register_blueprint(pages_bp)                 # /
+    app.register_blueprint(pages_bp)
     app.register_blueprint(tickets_bp, url_prefix="/tickets")
     app.register_blueprint(users_bp, url_prefix="/users")
 
