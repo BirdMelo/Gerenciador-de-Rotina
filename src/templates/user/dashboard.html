@@ -4,21 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Painel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </head>
 <body>
-    <h1>Área do Usuário</h1>
+    <header>
+        <h1>Área do Usuário</h1>
     
-    <h2>Bem-vindo(a) de volta, {{ user.name }}!</h2>
-    <p>Conta criada em: {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+        <h2>Bem-vindo(a), {{ user.name }}!</h2>
+        <hr>
+    </header>
+    <main>
+        <section id="section__userInfo">
+            <h3>Informações da Conta</h3>
+            <p><strong>Nome:</strong> {{ user.name }}</p>
+            <p><strong>Data de Criação:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+            <div>
+                <button id="btnAlterUser">Alterar Informações</button>
+                <button id="btnDeleteUser">Excluir Conta</button>
+            </div>
+        </section>
+        <hr>
+        <section id="section__tasks">
+            <h3>Suas Rotinas</h3>
+            <ul id="task_list">
+                {% if rotinas %}
+                    {% for rotina in rotinas if rotina.is_active %}
+                    <li class="task_item">
+                        <div>
+                            <h4 class="task_item__name">{{ rotina.name }}</h4>
+                            <p class="task_item__startTime">{{ rotina.startTime.strftime('%d/%m/%Y') }}</p>
+                            <p class="task_item__deadLine">{{ rotina.deadLine.strftime('%d/%m/%Y') }}</p>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('task.update_task', task_id=rotina.id) }}">
+                                <button class="task_item__edit_btn">Editar</button>
+                            </a>
+                            <form action="{{ url_for('task.delete_task', task_id=rotina.id) }}" method="POST">
+                                <button class="task_item__delete_btn" onclick="return confirm('Tem certeza que deseja excluir esta rotina?');">Excluir</button>
+                            </form>
+                        </div>
 
+                        {% if rotina.description %}
+                        <details>
+                            <summary>Descrição</summary>
+                            <p class="task_item__description">{{ rotina.description }}</p>
+                        </details>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li>Você ainda não tem rotinas cadastradas.</li>
+                {% endif %}
+            </ul>
+            <a href="{{ url_for('task.create_task') }}">Criar Nova Rotina</a>
+        </section>
+    </main>
+    
     <hr>
     
-    <h3>Suas Rotinas</h3>
-    <p>Ainda não há rotinas cadastradas.</p>
-    
-    <hr>
-    
-    <a href="{{ url_for('user.logout') }}" style="color: red;">Sair da Conta</a>
+    <a href="{{ url_for('user.logout') }}">Sair da Conta</a>
     
 </body>
 </html>

@@ -22,7 +22,7 @@ class Task(db.Model):
     name = db.Column(db.String(60), nullable=False)
     description = db.Column(db.String(255), nullable=True)
     startTime = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
-    deadLine = db.Column(db.DateTIme(timezone=True), nullable=False)
+    deadLine = db.Column(db.DateTime(timezone=True), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
@@ -38,7 +38,7 @@ class Executions(db.Model):
 
     # Foreign key para a rotina associada à execução
     rotina_id = db.Column(db.Integer, db.ForeignKey('rotina.id'), nullable=False)
-    rotina = db.relationship('Rotina', backref=db.backref('execucoes', lazy=True))
+    rotina = db.relationship('Task', backref=db.backref('execucoes', lazy=True))
 
     __table_args__ = (
         db.UniqueConstraint('rotina_id', 'date', name='uk_rotina_date_idx'),
@@ -57,4 +57,4 @@ class HistoryActions(db.Model):
 
     # Foreign key para a rotina associada à ação (pode ser nulo se a ação não estiver relacionada a uma rotina específica)
     rotina_id = db.Column(db.Integer, db.ForeignKey('rotina.id'), nullable=True)
-    rotina = db.relationship('Rotina', backref=db.backref('historico_acoes', lazy=True))
+    rotina = db.relationship('Task', backref=db.backref('historico_acoes', lazy=True))

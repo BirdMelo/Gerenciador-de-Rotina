@@ -34,6 +34,7 @@ def login():
             session['user_id'] = user.id
             return redirect(url_for('user.dashboard'))
         elif user and not user.is_active:
+            
             return 'Esse usuário está inativo. Por favor, entre em contato com o suporte.'
         else:
             return 'Usuário não encontrado. Por favor, verifique o nome e tente novamente.'
@@ -77,7 +78,7 @@ def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     user = User.query.get_or_404(session['user_id'])
-    return render_template('user/dashboard.html', user=user)
+    return render_template('user/dashboard.html', user=user, rotinas=user.rotinas)
 
 @bp.route('/logout')
 def logout():

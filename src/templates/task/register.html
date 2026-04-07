@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Nova Rotina</title>
+</head>
+<body>
+    <h1>Criar Nova Rotina</h1>
+    
+    <form method="POST" action="{{ url_for('task.create_task') }}">
+        
+        <div>
+            <label for="name">Nome da Rotina:</label><br>
+            <input type="text" id="name" name="name" maxlength="60" required>
+        </div>
+        <br>
+        
+        <div>
+            <label for="description">Descrição (Detalhes da atividade):</label><br>
+            <textarea id="description" name="description" maxlength="255" rows="3" cols="30"></textarea>
+        </div>
+        <br>
+        
+        <div>
+            <label for="deadLine">Prazo Final / Data de Fim (Opcional):</label><br>
+            <input type="datetime-local" id="deadLine" name="deadLine">
+        </div>
+        <br>
+        
+        <button type="submit">Guardar Rotina</button>
+        <a href="{{ url_for('user.dashboard') }}">Cancelar</a>
+        
+    </form>
+</body>
+</html>
