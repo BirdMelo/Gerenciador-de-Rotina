@@ -32,6 +32,9 @@ DROP TABLE IF EXISTS `db_rotinas`.`rotina` ;
 CREATE TABLE IF NOT EXISTS `db_rotinas`.`rotina` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(60) NOT NULL,
+  `startTime` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `deadLine` DATETIME NOT NULL,
+  `description` VARCHAR(255) NULL,
   `is_active` TINYINT(1) NOT NULL DEFAULT 1,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `user_id` INT NOT NULL,

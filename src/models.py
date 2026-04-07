@@ -16,10 +16,13 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
-class Rotina(db.Model):
+class Task(db.Model):
     __tablename__ = 'rotina'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     name = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    startTime = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+    deadLine = db.Column(db.DateTIme(timezone=True), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 

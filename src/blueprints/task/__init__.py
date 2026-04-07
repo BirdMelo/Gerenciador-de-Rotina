@@ -1,3 +1,3 @@
 from flask import Blueprint
-bp = Blueprint('taske', __name__)
+bp = Blueprint('task', __name__)
 from .import routes

@@ -17,10 +17,12 @@ def create_app():
     # blueprints
     from .blueprints.home import bp as home_bp
     from .blueprints.user import bp as user_bp
+    from .blueprints.task import bp as task_bp
 
     # Registrando rotas dos blueprints no app principal
     app.register_blueprint(home_bp)
     app.register_blueprint(user_bp, url_prefix='/user')
+    app.register_blueprint(task_bp, url_prefix='/task')
 
     # erro 404
     @app.errorhandler(404)
