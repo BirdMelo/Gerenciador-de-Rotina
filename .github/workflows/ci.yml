@@ -1,0 +1,38 @@
+name: Continuous Integration (CI)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  validacao-completa:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Instalação/preparação do ambiente
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar o Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10" # Ajuste para a versão que você usa
+
+    # 2. Instalação das dependências
+    - name: Instalar dependências
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pylint pytest
+
+    # 3. Execução do lint ou análise estática
+    - name: Rodar análise estática (Pylint)
+      run: |
+        pylint src/
+
+    # 4. Execução dos testes automatizados
+    - name: Rodar testes automatizados (Pytest)
+      run: |
+        pytest

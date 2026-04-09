@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sistema-de-rotinas"
+version = "1.5.1"
+description = "Um sistema web em Flask para gerenciamento de rotinas e execuções."
+authors = [
+    { name = "João Pedro de Melo Naves", email = "joao.naves@sempreceub.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools]
+packages = ["src"]
