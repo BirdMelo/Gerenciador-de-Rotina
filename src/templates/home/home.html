@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-</head>
-<body>
-    <h1>Home Page</h1>
-    <section>
-        <h2>Bem-vindo!!</h2>
-        <div>
-            <a href="{{ url_for('user.register') }}">Cadastrar</a>
-            <a href="{{ url_for('user.login') }}">Login</a>
-        </div>
-    </section>
-    
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home/home.css') }}">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <h1>Home Page</h1>
+        <section class="welcome-section">
+            <h2>Bem-vindo!!</h2>
+            <div>
+                <a href="{{ url_for('user.register') }}" class="btn">Cadastrar</a>
+                <a href="{{ url_for('user.login') }}" class="btn">Login</a>
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Página não encontrada</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Página não encontrada{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/errors/404.css') }}">
+{% endblock %}
+{% block content %}
     <h1>Erro 404 - Ops!</h1>
     <p>A página que você está procurando não existe ou o seu navegador está apenas procurando o ícone do site.</p>
     <a href="/">Voltar para a página inicial</a>
-</body>
-</html>
+{% endblock %}

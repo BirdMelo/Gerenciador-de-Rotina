@@ -1,0 +1,50 @@
+/* 1. Variáveis Globais */
+:root {
+    --cor-fundo: #f3f4f6;
+    --cor-texto: #1f2937;
+    --cor-texto-secundario: #374151;
+    --cor-primaria: #4f46e5;
+    --cor-primaria-hover: #4338ca;
+    --cor-fundo-cartao: #ffffff;
+    
+    --sombra-padrao: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --borda-arredondada: 12px;
+    --borda-botao: 8px;
+}
+
+/* 2. Reset Básico e Fontes Modernas */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* 3. Estilo Padrão do Corpo da Página */
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+}
+
+/* 4. Classe Global para Botões (Reaproveitável em todo o site!) */
+.btn {
+    text-decoration: none;
+    background-color: var(--cor-primaria);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--borda-botao);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    text-align: center;
+    border: none; /* Útil para quando for usar na tag <button> dos formulários */
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}

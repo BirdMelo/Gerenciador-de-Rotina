@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Atualizar Usuário</title>
-</head>
-<body>
-    <h1>Atualizar dados de: {{ user.name }}</h1>
-    
-    <form method="POST">
-        <div>
-            <label for="name">Novo Nome:</label><br>
-            <input type="text" id="name" name="name" value="{{ user.name }}" required>
-        </div>
-        <br>
-        <button type="submit">Salvar Alterações</button>
-        <a href="{{ url_for('user.dashboard') }}">Voltar ao Painel</a>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Atualizar Usuário{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/update.css') }}">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <h1>Atualizar dados de: {{ user.name }}</h1>
+        
+        <form method="POST" action="{{ url_for('user.update_user', user_id=user.id) }}" class="form-user">
+            <div>
+                <label for="name">Novo Nome:</label><br>
+                <input type="text" id="name" name="name" value="{{ user.name }}" required>
+            </div>
+            <br>
+            <button type="submit">Salvar Alterações</button>
+            <a href="{{ url_for('user.dashboard') }}">Voltar ao Painel</a>
+        </form>
+    </main>
+{% endblock %}

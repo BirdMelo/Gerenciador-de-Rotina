@@ -1,24 +1,25 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Registrar Usuário</title>
-</head>
-<body>
-    <h1>Criar uma nova conta</h1>
-    
-    <form method="POST">
-        <div>
-            <label for="name">Seu Nome:</label><br>
-            <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
-        </div>
-        <br>
-        <button type="submit">Registrar</button>
-    </form>
+{% extends "base.html" %}
 
-    <br>
-    <a href="{{ url_for('user.login') }}">Já tem uma conta? Faça login aqui.</a>
-    <br>
-    <a href="{{ url_for('home.index') }}">Voltar para o Início</a>
-</body>
-</html>
+{% block title %}Registrar Usuário{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/register.css') }}">
+{% endblock %}
+{% block content %}
+    <main>
+        <h1>Criar uma nova conta</h1>
+        
+        <form method="POST" action="{{ url_for('user.register') }}" class="form-user">
+            <div>
+                <label for="name">Seu Nome:</label><br>
+                <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
+            </div>
+            <br>
+            <button type="submit">Registrar</button>
+        </form>
+
+        <br>
+        <a href="{{ url_for('user.login') }}">Já tem uma conta? Faça login aqui.</a>
+        <br>
+        <a href="{{ url_for('home.index') }}">Voltar para o Início</a>
+    </main>
+{% endblock %}

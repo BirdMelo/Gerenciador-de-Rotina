@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Nova Rotina</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Criar Nova Rotina{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/task/register.css') }}">
+{% endblock %}
+{% block content %}
+<main>
     <h1>Criar Nova Rotina</h1>
     
-    <form method="POST" action="{{ url_for('task.create_task') }}">
+    <form method="POST" action="{{ url_for('task.create_task') }}" class="form-task">
         
         <div>
             <label for="name">Nome da Rotina*:</label><br>
@@ -51,5 +51,5 @@
         <a href="{{ url_for('user.dashboard') }}">Cancelar</a>
         
     </form>
-</body>
-</html>
+</main>
+{% endblock %}

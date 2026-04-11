@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Painel</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-    <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Meu Painel{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/dashboard.css') }}">
+{% endblock %}
+    <script defer src="{{ url_for('static', filename='js/user/dashboard.js') }}"></script>
+{% block content %}
     <header>
         <h1>Área do Usuário</h1>
     
@@ -15,11 +13,11 @@
         <hr>
     </header>
     <main>
-        <section id="section__userInfo">
+        <section id="dashboard_section__userInfo">
             <h3>Informações da Conta</h3>
             <p><strong>Nome:</strong> {{ user.name }}</p>
             <p><strong>Data de Criação:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}</p>
-            <div>
+            <div class="userInfo__buttons">
                 <form action="{{ url_for('user.update_user', user_id=user.id) }}" method="POST">
                     <button id="btnAlterUser">Alterar Informações</button>
                 </form>
@@ -29,7 +27,7 @@
             </div>
         </section>
         <hr>
-        <section id="section__tasks">
+        <section id="dashboard_section__tasks">
             <h3>Suas Rotinas</h3>
             
             {% if rotinas %}
@@ -49,17 +47,17 @@
                         
                         {% for rotina in rotinas if rotina.is_active and rotina.weakday.name == dia_enum %}
                         <li class="task_item">
-                            <div>
+                            <div class="task_item__conclude">
                                 <form action="{{ url_for('task.complete_task', task_id=rotina.id) }}" method="POST">
                                     <button class="task_item__complete_btn" onclick="return confirm('Marcar esta rotina como concluída?');">Concluir</button>
                                 </form>
                             </div>
-                            <div>
+                            <div class="task_item__attributes">
                                 <h4 class="task_item__name">{{ rotina.name }}</h4>
                                 <p class="task_item__startTime">Início: {{ rotina.startTime.strftime('%H:%M') }}</p>
                                 <p class="task_item__endTime">Fim: {{ rotina.endTime.strftime('%H:%M') }}</p>
                             </div>
-                            <div>
+                            <div class="task_item__buttons">
                                 <a href="{{ url_for('task.update_task', task_id=rotina.id) }}">
                                     <button class="task_item__edit_btn">Editar</button>
                                 </a>
@@ -95,5 +93,4 @@
     
     <a href="{{ url_for('user.logout') }}">Sair da Conta</a>
     
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,41 @@
+/* 1. Layout da Home */
+body {
+    /* O background e a cor do texto já estão no root.css! */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* 2. Título Principal */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #111827;
+}
+
+/* 3. O Cartão Central */
+section {
+    background-color: var(--cor-fundo-cartao);
+    padding: 3rem;
+    border-radius: var(--borda-arredondada);
+    box-shadow: var(--sombra-padrao);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* 4. Subtítulo dentro do cartão */
+section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--cor-texto-secundario);
+}
+
+/* 5. Organização dos Botões */
+section div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
