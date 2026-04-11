@@ -8,6 +8,8 @@ definidas no arquivo .env, e define a classe Config que é usada para configurar
 import os
 from dotenv import load_dotenv
 load_dotenv( interpolate= True )
+
+# pylint: disable=too-few-public-methods
 class Config:
     """
     A classe Config define a URI de conexão com o banco de dados MySQL
