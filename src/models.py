@@ -9,6 +9,7 @@ from sqlalchemy.sql import func
 from .extentions import db
 
 # pylint: disable=not-callable
+# pylint: disable=too-few-public-methods
 
 class ActionsType(Enum):
     """
