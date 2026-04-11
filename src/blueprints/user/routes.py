@@ -1,3 +1,12 @@
+"""
+Módulo de rotas para o blueprint de usuário, contendo as operações CRUD e a dashboard do usuário.
+As rotas implementam as seguintes funcionalidades:
+- Registro de novos usuários (CREATE)
+- Login de usuários existentes (READ)
+- Atualização de informações do usuário (UPDATE)
+- Desativação de usuários (DELETE)
+- Dashboard do usuário para acessar suas rotinas e informações pessoais
+"""
 from flask import request, render_template, redirect, url_for, session, flash
 
 from src.models import ActionsType, HistoryActions, User
@@ -7,6 +16,11 @@ from . import bp
 #CREATE
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    Rota para registrar um novo usuário. No método POST, recebe o nome do usuário,
+    cria um novo registro na tabela de usuários e registra a ação de criação no histórico.
+    No método GET, renderiza o formulário de registro.
+    """
     if request.method == 'POST':
         name = request.form.get('name')
         new_user = User(name=name)
@@ -27,9 +41,14 @@ def register():
 #READ
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Rota para login de usuários. No método POST, recebe o nome do usuário,
+    verifica se ele existe e está ativo, e, se for o caso,
+    armazena o ID do usuário na sessão para manter o estado
+    de login. No método GET, renderiza o formulário de login.
+    """
     if request.method == 'POST':
-        nome_digitado = request.form.get('name')
-        
+        nome_digitado = request.form.get('name')  
         # Verifica se o usuário existe e está ativo
         if not nome_digitado:
             flash('Por favor, insira um nome de usuário.', 'error')
@@ -39,7 +58,6 @@ def login():
         if user and user.is_active:
             session['user_id'] = user.id
             return redirect(url_for('user.dashboard'))
-        
         elif user and not user.is_active:
             flash('Sua conta está desativada. Por favor, entre em contato com o suporte.', 'error')
             return redirect(url_for('user.login'))
@@ -52,6 +70,11 @@ def login():
 #UPDATE
 @bp.route('/update/<int:user_id>', methods=['POST', 'GET'])
 def update_user(user_id):
+    """
+    Rota para atualizar as informações de um usuário. No método POST, recebe o novo nome do usuário,
+    atualiza o registro do usuário no banco de dados e registra a ação de atualização no histórico.
+    No método GET, renderiza o formulário de atualização com as informações atuais do usuário.
+    """
     user = User.query.get_or_404(user_id)
     if request.method == 'POST':
         new_name = request.form.get('name')
@@ -60,7 +83,6 @@ def update_user(user_id):
         if not new_name:
             flash('O nome do usuário não pode ser vazio.', 'error')
             return redirect(url_for('user.update_user', user_id=user_id))
-        
         user.name = new_name
         action = HistoryActions(
             actionsType = ActionsType.UPDATE,
@@ -75,6 +97,13 @@ def update_user(user_id):
 #DELETE
 @bp.route('/delete/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
+    """
+    Rota para desativar um usuário. Recebe o ID do usuário,
+    marca o usuário como inativo no banco de dados
+    e registra a ação de desativação no histórico.
+    O usuário desativado não poderá mais fazer login,
+    mas seus dados permanecerão no banco para fins de histórico e auditoria.
+    """
     user = User.query.get_or_404(user_id)
     user.is_active = False  # Marcar o usuário como inativo em vez de deletar
     action = HistoryActions(
@@ -90,6 +119,12 @@ def delete_user(user_id):
 
 @bp.route('/dashboard')
 def dashboard():
+    """
+    Rota para a dashboard do usuário, onde ele pode acessar suas rotinas e informações pessoais.
+    Verifica se o usuário está logado (presença do ID do usuário na sessão) e, se estiver,
+    busca as informações do usuário no banco de dados para renderizar a dashboard.
+    Se o usuário não estiver logado, redireciona para a página de login.
+    """
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     user = User.query.get_or_404(session['user_id'])
@@ -97,8 +132,12 @@ def dashboard():
 
 @bp.route('/logout')
 def logout():
+    """
+    Rota para logout do usuário. Remove o ID do usuário da sessão do navegador,
+    efetivamente encerrando a sessão de login,
+    e redireciona o usuário de volta para a página inicial.
+    """
     # Remove o ID do usuário da sessão do navegador
     session.pop('user_id', None)
-    
     # Redireciona ele de volta para a página inicial
     return redirect(url_for('home.index'))
