@@ -24,6 +24,10 @@ def register():
     if request.method == 'POST':
         name = request.form.get('name')
         new_user = User(name=name)
+        isExisting = User.query.filter_by(name=name).first()
+        if isExisting:
+            flash('Já existe uma conta com este nome.')
+            return redirect(url_for('user.register'))
         db.session.add(new_user)
         db.session.flush()  # Flush para obter o ID do novo usuário
 
@@ -48,7 +52,7 @@ def login():
     de login. No método GET, renderiza o formulário de login.
     """
     if request.method == 'POST':
-        nome_digitado = request.form.get('name')  
+        nome_digitado = request.form.get('name')
         # Verifica se o usuário existe e está ativo
         if not nome_digitado:
             flash('Por favor, insira um nome de usuário.', 'error')
@@ -91,7 +95,7 @@ def update_user(user_id):
         )
         db.session.add(action)
         db.session.commit()
-        return 'User updated successfully!'
+        return redirect(url_for('user.dashboard'))
     return render_template('user/update.html', user=user)
 
 #DELETE
