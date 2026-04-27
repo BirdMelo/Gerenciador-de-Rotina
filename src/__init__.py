@@ -9,10 +9,13 @@ from flask import Flask, render_template
 from src.config import Config
 from .extentions import db, migrate
 
-def create_app():
+def create_app(test_config=None):
     """Cria e configura a aplicação Flask."""
     app = Flask(__name__)
-    app.config.from_object(Config)
+    if test_config is None:
+        app.config.from_object(Config)
+    else:
+        app.config.update(test_config)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     # inicializa ORM e migrations
