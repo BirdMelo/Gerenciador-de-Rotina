@@ -32,7 +32,8 @@ def app():
     config = {
         "TESTING": True,
         "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-        "SQLALCHEMY_TRACK_MODIFICATIONS": False
+        "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+        "SCRET_KEY": "test-key"
     }
     app = create_app(config)
     with app.app_context():

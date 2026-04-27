@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sistema-de-rotinas"
-version = "2.1.2"
+version = "2.1.3"
 description = "Um sistema web em Flask para gerenciamento de rotinas e execuções."
 authors = [
     { name = "João Pedro de Melo Naves", email = "joao.naves@sempreceub.com" },
