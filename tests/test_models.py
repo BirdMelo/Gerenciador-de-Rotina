@@ -8,7 +8,7 @@ a integridade dos dados e o correto funcionamento da aplicação.
 from src.extentions import db
 from src.models import User
 
-def create_test_user(app):
+def test_create_user(app):
     """
     O teste create_test_user verifica se um usuário pode ser criado e
     salvo corretamente no banco de dados,

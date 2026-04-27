@@ -137,7 +137,9 @@ O sistema foi desenhado para garantir a consistência no acompanhamento das roti
 4. **Integridade Relacional (Exclusão Segura):**
    * Para evitar registros "órfãos" no banco de dados, a exclusão de um usuário não pode ser feita de forma arbitrária.
    * Ao deletar um usuário, o sistema deve garantir que o histórico de ações atrelado a ele seja devidamente tratado ou limpo primeiro, respeitando as chaves estrangeiras (Foreign Keys).
-
+## Issue de feriados
+Atualização da aplicação para ter uma API que fornece todos os feriados e pontos facutativos do Brasil, utilizando a api [invertexto](https://api.invertexto.com/).
+A API fornece os dias e nomes dos feriados/facutativos que serão utilizados para mudar a aparência do dia para indicar que é um dia com feriado.
 ## Instruções para Execução do Projeto
 ### Preparação de Ambiente
 Para a preparação do ambiente, copie os códigos abaixo no terminal da IDE:
@@ -177,7 +179,7 @@ Ou executar no terminal, dentro do ambiente `(venv_desenvolvimento)` o comando a
 python run.py
 ```
 ---
-**Versão Atual**: 2.0.12
+**Versão Atual**: 2.1.0
 
 **Autores**: João Pedro de Melo Naves, Vítor Camargo
 

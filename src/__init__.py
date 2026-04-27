@@ -32,7 +32,7 @@ def create_app():
 
     # erro 404
     @app.errorhandler(404)
-    def not_found():
+    def not_found(e): # pylint: disable=unused-argument
         return render_template("errors/404.html"), 404
 
     return app

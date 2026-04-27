@@ -8,9 +8,14 @@ A fixture "client" fornece um cliente de teste para fazer requisições
 Essas fixtures garantem que cada teste seja executado em um ambiente isolado,
 com um banco de dados limpo e sem interferências entre os testes.
 """
+
+import sys
+import os
 import pytest
 from src import create_app
 from src.extentions import db
+
+sys.path.insert(0,os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Desativa o aviso de redefinição de nome, pois o Pytest exige isso nas fixtures
 # pylint: disable=redefined-outer-name
