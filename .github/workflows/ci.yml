@@ -35,4 +35,4 @@ jobs:
     # 4. Execução dos testes automatizados
     - name: Rodar testes automatizados (Pytest)
       run: |
-        pytest
+        python -m pytest
