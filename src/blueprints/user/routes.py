@@ -136,7 +136,24 @@ def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     user = User.query.get_or_404(session['user_id'])
-    return render_template('user/dashboard.html', user=user, rotinas=user.rotinas)
+    rotinas_ativas = [r for r in user.rotinas if r.is_active]
+    rotinas_json = [
+        {
+            'id': r.id,
+            'name': r.name,
+            'date': r.date.strftime('%Y-%m-%d'),
+            'startTime': r.startTime.strftime('%H:%M'),
+            'endTime': r.endTime.strftime('%H:%M'),
+            'description': r.description or ''
+        }
+        for r in rotinas_ativas
+    ]
+    return render_template(
+        'user/dashboard.html',
+        user=user,
+        rotinas=user.rotinas,
+        rotinas_json=rotinas_json
+    )
 
 @bp.route('/logout')
 def logout():

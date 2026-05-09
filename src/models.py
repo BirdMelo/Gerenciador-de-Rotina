@@ -21,19 +21,6 @@ class ActionsType(Enum):
     UPDATE = 'UPDATE'
     DELETE = 'DELETE'
 
-class WeakDay(Enum):
-    """
-    WeakDay é um enum que define os dias da semana.
-    Ele é usado para indicar em quais dias da semana uma tarefa deve ser executada.
-    """
-    SUNDAY = 'SUNDAY'
-    MONDAY = 'MONDAY'
-    TUESDAY = 'TUESDAY'
-    WEDNESDAY = 'WEDNESDAY'
-    THURSDAY = 'THURSDAY'
-    FRIDAY = 'FRIDAY'
-    SATURDAY = 'SATURDAY'
-
 class User(db.Model):
     """
     User é um modelo que representa a tabela de usuários no banco de dados.
@@ -57,7 +44,7 @@ class Task(db.Model):
     description = db.Column(db.String(255), nullable=True)
     startTime = db.Column(db.Time, nullable=False)
     endTime = db.Column(db.Time, nullable=False)
-    weakday = db.Column(db.Enum(WeakDay), nullable=False)
+    date = db.Column(db.Date, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 

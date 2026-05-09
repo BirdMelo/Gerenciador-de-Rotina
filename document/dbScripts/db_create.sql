@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `db_rotinas`.`rotina` (
   `name` VARCHAR(60) NOT NULL,
   `startTime` TIME NOT NULL,
   `endTime` TIME NOT NULL,
-  `weakday` ENUM('SUNDAY','MONDAY','TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY') NOT NULL,
+  `date` DATE NOT NULL,
   `description` VARCHAR(255) NULL,
   `is_active` BOOLEAN NOT NULL DEFAULT TRUE,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -48,65 +48,6 @@ CREATE TABLE IF NOT EXISTS `db_rotinas`.`rotina` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `db_rotinas`.`execucoes`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `db_rotinas`.`execucoes` ;
-
-CREATE TABLE IF NOT EXISTS `db_rotinas`.`execucoes` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `date` DATE NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  `rotina_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `uk_rotina_date_idx` (`rotina_id` ASC, `date` ASC),
-  INDEX `fk_execucoes_rotina1_idx` (`rotina_id` ASC),
-  CONSTRAINT `fk_execucoes_rotina1`
-    FOREIGN KEY (`rotina_id`)
-    REFERENCES `db_rotinas`.`rotina` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `db_rotinas`.`historico_acoes`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `db_rotinas`.`historico_acoes` ;
-
-CREATE TABLE IF NOT EXISTS `db_rotinas`.`historico_acoes` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `actionsType` ENUM('CREATE', 'UPDATE', 'DELETE') NOT NULL,
-  `description` VARCHAR(255) NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  `user_id` INT NOT NULL,
-  `rotina_id` INT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_historico_acoes_usuario1_idx` (`user_id` ASC),
-  INDEX `fk_historico_acoes_rotina1_idx` (`rotina_id` ASC),
-  CONSTRAINT `fk_historico_acoes_usuario1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `db_rotinas`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_historico_acoes_rotina1`
-    FOREIGN KEY (`rotina_id`)
-    REFERENCES `db_rotinas`.`rotina` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
--- ADMIN
-INSERT INTO db_rotinas.usuario(`name`)
-VALUES ('admin');
-
 
 -- -----------------------------------------------------
 -- Table `db_rotinas`.`execucoes`
@@ -172,7 +113,7 @@ BEGIN
     SELECT COUNT(*) INTO conflitos
     FROM `db_rotinas`.`rotina`
     WHERE user_id = NEW.user_id
-      AND weakday = NEW.weakday
+      AND date = NEW.date
       AND startTime < NEW.endTime
       AND endTime > NEW.startTime
       AND is_active = true;
@@ -190,3 +131,7 @@ DELIMITER ;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- ADMIN
+INSERT INTO db_rotinas.usuario(`name`)
+VALUES ('admin');

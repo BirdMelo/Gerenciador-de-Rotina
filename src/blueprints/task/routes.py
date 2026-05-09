@@ -7,8 +7,9 @@ Conectando o banco de dados às páginas HTML
 para permitir a interação do usuário com suas rotinas.
 """
 from datetime import datetime, date
+import requests as http_request
 
-from flask import session, redirect, render_template, url_for, request, flash
+from flask import current_app, session, redirect, render_template, url_for, request, flash, jsonify
 from sqlalchemy.exc import SQLAlchemyError
 from src.models import Task, HistoryActions, ActionsType, User, Executions
 from src.extentions import db
@@ -35,10 +36,10 @@ def create_task():
         description = request.form.get('description')
         endtime = request.form.get('endTime')
         start_time: str | None = request.form.get('startTime')
-        weakday = request.form.get('weakday')
+        task_date = request.form.get('date')
 
         # Verifica se os campos obrigatórios estão preenchidos
-        if not name or not endtime or not start_time or not weakday:
+        if not name or not endtime or not start_time or not date:
             flash('Precisa preencher todos os campos obrigatórios.', 'error')
             return redirect(url_for('task.create_task'))
         if endtime <= start_time:
@@ -52,7 +53,7 @@ def create_task():
         conflicting_tasks = Task.query.filter(
             Task.is_active == True,
             Task.user_id == session['user_id'],
-            Task.weakday == weakday,
+            Task.date == task_date,
             Task.startTime < endtime,
             Task.endTime > start_time
         ).first()
@@ -79,7 +80,7 @@ def create_task():
                 description=description,
                 endTime=endtime_date,
                 startTime=start_time_date,
-                weakday=weakday,
+                date=task_date,
                 user_id=user_id
             )
             db.session.add(new_task)
@@ -95,9 +96,9 @@ def create_task():
             db.session.add(history_entry)
             db.session.commit()
             return redirect(url_for('user.dashboard'))
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             db.session.rollback()
-            flash('Erro Inesperado', 'error')
+            flash(f'Erro ao criar a rotina.\n{str(e)}', 'error')
             return redirect(url_for('task.create_task'))
     return render_template('task/register.html')
 
@@ -120,9 +121,9 @@ def update_task(task_id):
         new_description = request.form.get('description')
         new_end_time = request.form.get('endTime')
         new_start_time = request.form.get('startTime')
-        new_weakday = request.form.get('weakday')
+        new_date = request.form.get('date')
         # Verifica se os campos obrigatórios estão preenchidos
-        if not new_name or not new_end_time or not new_start_time or not new_weakday:
+        if not new_name or not new_end_time or not new_start_time or not new_date:
             flash('Precisa preencher todos os campos obrigatórios.', 'error')
             return redirect(url_for('task.update_task', task_id=task_id))
         if new_end_time <= new_start_time:
@@ -136,7 +137,7 @@ def update_task(task_id):
         conflicting_tasks = Task.query.filter(
             Task.is_active == True,
             Task.user_id == session['user_id'],
-            Task.weakday == new_weakday,
+            Task.date == new_date,
             Task.startTime < new_end_time,
             Task.endTime > new_start_time,
             Task.id != task_id
@@ -162,7 +163,7 @@ def update_task(task_id):
             task.description = new_description
             task.endTime = end_time_date
             task.startTime = start_time_date
-            task.weakday = new_weakday
+            task.date = new_date
             db.session.add(task)
             db.session.commit()
 
@@ -179,7 +180,7 @@ def update_task(task_id):
             return redirect(url_for('user.dashboard'))
         except SQLAlchemyError:
             db.session.rollback()
-            flash('Erro Inesperado', 'error')
+            flash('Erro ao atualizar a rotina.', 'error')
             return redirect(url_for('task.update_task', task_id=task_id))
     return render_template('task/edit.html', task=task)
 
@@ -250,3 +251,20 @@ def complete_task(task_id):
         flash('Ocorreu um erro ao concluir a tarefa. Tente novamente.', 'error')
         return redirect(url_for('user.dashboard'))
     return redirect(url_for('user.dashboard'))
+
+@bp.route('/feriados')
+def feriados():
+    """
+    Rota para exibir os feriados do ano. Esta rota pode ser utilizada para
+    mostrar os feriados na dashboard do usuário, permitindo que ele veja
+    os dias em que não deve agendar rotinas ou planeje suas atividades
+    considerando os feriados.
+    """
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    year = request.args.get('year', datetime.now().year)
+    token = current_app.config['TOKEN_FERIADO']
+    resp = http_request.get(f'https://api.invertexto.com/v1/holidays/{year}',
+                             params={'token': token, 'state': 'DF'},
+                             timeout=10)
+    return jsonify(resp.json())

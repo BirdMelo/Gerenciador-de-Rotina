@@ -36,17 +36,8 @@
                 <br>
 
                 <div>
-                    <label for="weakday">Dia da Semana*:</label><br>
-                    <select id="weakday" name="weakday" required>
-                        <option value="">Selecione um dia</option>
-                        <option value="MONDAY" {{ 'selected' if task.weakday and task.weakday.name == 'MONDAY' else '' }}>Segunda-feira</option>
-                        <option value="TUESDAY" {{ 'selected' if task.weakday and task.weakday.name == 'TUESDAY' else '' }}>Terça-feira</option>
-                        <option value="WEDNESDAY" {{ 'selected' if task.weakday and task.weakday.name == 'WEDNESDAY' else '' }}>Quarta-feira</option>
-                        <option value="THURSDAY" {{ 'selected' if task.weakday and task.weakday.name == 'THURSDAY' else '' }}>Quinta-feira</option>
-                        <option value="FRIDAY" {{ 'selected' if task.weakday and task.weakday.name == 'FRIDAY' else '' }}>Sexta-feira</option>
-                        <option value="SATURDAY" {{ 'selected' if task.weakday and task.weakday.name == 'SATURDAY' else '' }}>Sábado</option>
-                        <option value="SUNDAY" {{ 'selected' if task.weakday and task.weakday.name == 'SUNDAY' else '' }}>Domingo</option>
-                    </select>
+                    <label for="task_date">Data da Rotina*:</label>
+                <input type="date" id="task_date" name="date" required value="{{ task.date.strftime('%Y-%m-%d') if task.date else '' }}">
                 </div>
                 <br>
 

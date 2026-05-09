@@ -2,6 +2,8 @@
 Esse modulo serve para testar automaticamente criações de rotinas no sistema
 Testando a conectividade com o banco de dados
 """
+from datetime import date
+
 from src.models import Task, User
 
 def test_create_task_route_get(client):
@@ -12,7 +14,7 @@ def test_create_task_route_get(client):
     response = client.get('task/create')
     assert response.status_code == 200
     # Verifica se os elementos do seu register.html estão a ser renderizados
-    assert b"Nome da Rotina*:" in response.data 
+    assert b"Nome da Rotina*:" in response.data
     assert b"Guardar Rotina" in response.data
 
 def test_create_task_post_success(client, app):
@@ -36,7 +38,7 @@ def test_create_task_post_success(client, app):
         'description': 'Corrida no parque',   # Corresponde ao textarea id="description"
         'startTime': '07:00',                 # Corresponde ao input id="startTime"
         'endTime': '08:00',                   # Corresponde ao input id="endTime"
-        'weakday': 'MONDAY'                   # Corresponde ao option value="MONDAY" do select
+        'date': '2023-10-10'                  # Corresponde ao input id="date"
     }
     # Faz o POST para a rota
     response = client.post('task/create', data=data, follow_redirects=True)
@@ -48,4 +50,4 @@ def test_create_task_post_success(client, app):
         task = Task.query.filter_by(name='Fazer Exercício').first()
         assert task is not None
         assert task.user_id == user_id
-        assert task.weakday.value == 'MONDAY'
+        assert task.date == date.today()

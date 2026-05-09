@@ -93,3 +93,167 @@ form button {
     border-radius: var(--borda-arredondada);
     border: solid 1px var(--cor-primaria);
 }
+
+/* 5. Calendário */
+
+#calendar {
+    min-height: 500px;
+}
+
+
+.fc-toolbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.fc-toolbar-title {
+    font-size: 1.2rem !important;
+    font-weight: 700;
+    width: 200px;
+    height: 64px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 0.7rem;
+}
+.fc-button {
+    background-color: var(--cor-primaria) !important;
+    border: none !important;
+    border-radius: var(--borda-botao) !important;
+}
+.fc-button:hover {
+    background-color: var(--cor-primaria-hover) !important;
+}
+.fc-button-group {
+    display: flex;
+    gap: 0.7rem;
+}
+.fc-scrollgrid a{
+    background-color: transparent !important;
+    color: var(--cor-texto) !important;
+}
+.fc-today-button {
+    display: none !important;
+}
+.fc-listMonth-button {
+    display: none !important;
+}
+
+.fc-daygrid-day-events {
+    display: none !important;
+}
+.fc-dayGridMonth-button {
+    display: none !important;
+}
+
+/* 6. Bolinhas indicadoras no calendário */
+.fc-daygrid-day-frame {
+    position: relative;
+}
+
+.day-dots {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-rotina  { background-color: #3788d8; }
+.dot-feriado { background-color: #e74c3c; }
+
+/* 7. Modal */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.modal--visible {
+    display: flex;
+}
+.modal__box {
+    background: var(--cor-fundo);
+    border-radius: var(--borda-arredondada);
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.modal__header h3 {
+    font-size: 1rem;
+    text-transform: capitalize;
+}
+.modal__header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+.modal__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.modal-rotina {
+    background: var(--cor-fundo-cartao);
+    border-left: 4px solid #3788d8;
+    border-radius: 4px;
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.modal-rotina p {
+    font-size: 0.85rem;
+    color: var(--cor-texto);
+    margin: 0;
+}
+.modal-feriado {
+    background: #fdecea;
+    border-left: 4px solid #e74c3c;
+    border-radius: 4px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+}
+.modal-rotina__buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.btn-modal-editar {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+}
+
+.btn-modal-excluir {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+    background-color: var(--cor-erro, #e74c3c);
+    color: white;
+    border: none;
+    border-radius: var(--borda-botao);
+    cursor: pointer;
+}

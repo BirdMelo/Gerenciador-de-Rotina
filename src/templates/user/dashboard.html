@@ -3,12 +3,16 @@
 {% block title %}Meu Painel{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/user/dashboard.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 {% endblock %}
-    <script defer src="{{ url_for('static', filename='js/user/dashboard.js') }}"></script>
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js" defer></script>
+    <script src="{{ url_for('static', filename='js/user/dashboard.js') }}" defer></script>
+{% endblock %}
+
 {% block content %}
     <header>
         <h1>Área do Usuário</h1>
-    
         <h2>Bem-vindo(a), {{ user.name }}!</h2>
         <hr>
     </header>
@@ -25,68 +29,25 @@
             </div>
         </section>
         <hr>
+
         <section id="dashboard_section__tasks" class="cards-container">
             <h3>Suas Rotinas</h3>
-            
-            {% if rotinas %}
-                {% set dias_semana = [
-                    ('SUNDAY', 'Domingo'),
-                    ('MONDAY', 'Segunda-feira'),
-                    ('TUESDAY', 'Terça-feira'),
-                    ('WEDNESDAY', 'Quarta-feira'),
-                    ('THURSDAY', 'Quinta-feira'),
-                    ('FRIDAY', 'Sexta-feira'),
-                    ('SATURDAY', 'Sábado')
-                ] %}
-                <div id="tasks_list">
-                {% for dia_enum, dia_pt in dias_semana %}
-                    
-                    <div class="day_column">
-                        <h4 class="day_title">{{ dia_pt }}</h4>
-                        
-                        <ul id="task_list__{{ dia_enum }}" class="task_list_day">
-                            {% for rotina in rotinas | sort(attribute='startTime') if rotina.is_active and rotina.weakday.name == dia_enum %}
-                            <li class="task_item">
-                                <div class="task_item__conclude">
-                                    <form action="{{ url_for('task.complete_task', task_id=rotina.id) }}" method="POST">
-                                        <button id="task_item__complete_btn" onclick="return confirm('Marcar esta rotina como concluída?');">Concluir</button>
-                                    </form>
-                                </div>
-                                <div class="task_item__attributes">
-                                    <h4 class="task_item__name">{{ rotina.name }}</h4>
-                                    <p class="task_item__time">{{ rotina.startTime.strftime('%H:%M') }} - {{ rotina.endTime.strftime('%H:%M') }}</p>
-                                </div>
-                                <div class="task_item__buttons">
-                                    <a href="{{ url_for('task.update_task', task_id=rotina.id) }}" id="task_item__edit_btn">Editar</a>
-                                    <form action="{{ url_for('task.delete_task', task_id=rotina.id) }}" method="POST">
-                                        <button id="task_item__delete_btn" class="exit" onclick="return confirm('Tem certeza que deseja excluir esta rotina?');">Excluir</button>
-                                    </form>
-                                </div>
-
-                                {% if rotina.description %}
-                                <details>
-                                    <summary>Descrição</summary>
-                                    <p class="task_item__description">{{ rotina.description }}</p>
-                                </details>
-                                {% endif %}
-                            </li>
-                            {% else %}
-                                <p class="empty_day_msg">Sem rotinas para este dia.</p>
-                            {% endfor %}
-                        </ul>
-                    </div> {% endfor %}
-                </div>
-
-            {% else %}
-                <p>Você ainda não tem rotinas cadastradas.</p>
-            {% endif %}
-            
+            <div id="calendar"></div>
             <br>
             <a href="{{ url_for('task.create_task') }}">Criar Nova Rotina</a>
         </section>
         <hr>
-    
+
         <a href="{{ url_for('user.logout') }}" class="exit">Sair da Conta</a>
     </main>
-    
+    <div id="rotinas-data" data-rotinas='{{ rotinas_json | tojson }}' hidden></div>
+    <div id="modal" class="modal">
+    <div class="modal__box">
+        <div class="modal__header">
+            <h3 id="modal-title"></h3>
+            <button id="modal-close">&times;</button>
+        </div>
+        <div id="modal-body" class="modal__body"></div>
+    </div>
+</div>
 {% endblock %}
