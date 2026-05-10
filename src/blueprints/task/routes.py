@@ -39,7 +39,7 @@ def create_task():
         task_date = request.form.get('date')
 
         # Verifica se os campos obrigatórios estão preenchidos
-        if not name or not endtime or not start_time or not date:
+        if not name or not endtime or not start_time or not task_date:
             flash('Precisa preencher todos os campos obrigatórios.', 'error')
             return redirect(url_for('task.create_task'))
         if endtime <= start_time:
@@ -80,7 +80,7 @@ def create_task():
                 description=description,
                 endTime=endtime_date,
                 startTime=start_time_date,
-                date=task_date,
+                date= datetime.strptime(task_date, '%Y-%m-%d').date() if task_date else None,
                 user_id=user_id
             )
             db.session.add(new_task)
@@ -163,7 +163,7 @@ def update_task(task_id):
             task.description = new_description
             task.endTime = end_time_date
             task.startTime = start_time_date
-            task.date = new_date
+            task.date = datetime.strptime(new_date, '%Y-%m-%d').date() if new_date else None
             db.session.add(task)
             db.session.commit()
 
