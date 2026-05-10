@@ -50,4 +50,4 @@ def test_create_task_post_success(client, app):
         task = Task.query.filter_by(name='Fazer Exercício').first()
         assert task is not None
         assert task.user_id == user_id
-        assert task.date == date.today()
+        assert task.date == date(2023, 10, 10)

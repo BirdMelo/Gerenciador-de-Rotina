@@ -24,7 +24,7 @@ def register():
     if request.method == 'POST':
         name = request.form.get('name')
         new_user = User(name=name)
-        is_existing = User.query.filter_by(name=name).first()
+        is_existing = db.session.query(User).filter_by(name=name).first()
         if is_existing:
             flash('Já existe uma conta com este nome.')
             return redirect(url_for('user.register'))
@@ -58,7 +58,7 @@ def login():
             flash('Por favor, insira um nome de usuário.', 'error')
             return redirect(url_for('user.login'))
 
-        user = User.query.filter_by(name=nome_digitado).first()
+        user = db.session.query(User).filter_by(name=nome_digitado).first()
         if user and user.is_active:
             session['user_id'] = user.id
             return redirect(url_for('user.dashboard'))
@@ -79,7 +79,7 @@ def update_user(user_id):
     atualiza o registro do usuário no banco de dados e registra a ação de atualização no histórico.
     No método GET, renderiza o formulário de atualização com as informações atuais do usuário.
     """
-    user = User.query.get_or_404(user_id)
+    user = db.session.get(User, user_id)
     if request.method == 'POST':
         new_name = request.form.get('name')
 
@@ -87,7 +87,7 @@ def update_user(user_id):
         if not new_name:
             flash('O nome do usuário não pode ser vazio.', 'error')
             return redirect(url_for('user.update_user', user_id=user_id))
-        is_existing = User.query.filter_by(name=new_name).first()
+        is_existing = db.session.query(User).filter_by(name=new_name).first()
         if is_existing and is_existing.id != user_id:
             flash('Já existe uma conta com este nome.', 'error')
             return redirect(url_for('user.update_user', user_id=user_id))
@@ -112,7 +112,7 @@ def delete_user(user_id):
     O usuário desativado não poderá mais fazer login,
     mas seus dados permanecerão no banco para fins de histórico e auditoria.
     """
-    user = User.query.get_or_404(user_id)
+    user = db.session.get(User, user_id)
     user.is_active = False  # Marcar o usuário como inativo em vez de deletar
     action = HistoryActions(
         actionsType = ActionsType.DELETE,
@@ -135,7 +135,7 @@ def dashboard():
     """
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
-    user = User.query.get_or_404(session['user_id'])
+    user = db.session.get(User, session['user_id'])
     rotinas_ativas = [r for r in user.rotinas if r.is_active]
     rotinas_json = [
         {

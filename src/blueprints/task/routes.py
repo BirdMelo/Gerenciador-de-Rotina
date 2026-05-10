@@ -31,7 +31,7 @@ def create_task():
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     if request.method == "POST":
-        user = User.query.get(session['user_id'])
+        user = db.session.get(User, session['user_id'])
         name = request.form.get('name')
         description = request.form.get('description')
         endtime = request.form.get('endTime')
@@ -50,7 +50,7 @@ def create_task():
             return redirect(url_for('task.create_task'))
         # Conflito de horário: Verifica se o novo horário de início
         # ou fim da tarefa conflita com outras tarefas do usuário
-        conflicting_tasks = Task.query.filter(
+        conflicting_tasks = db.session.query(Task).filter(
             Task.is_active == True,
             Task.user_id == session['user_id'],
             Task.date == task_date,
@@ -113,9 +113,9 @@ def update_task(task_id):
     """
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
-    task = Task.query.get_or_404(task_id)
+    task = db.session.get(Task, task_id)
     if request.method == "POST":
-        user = User.query.get(session['user_id'])
+        user = db.session.get(User, session['user_id'])
         # Novos dados da tarefa
         new_name = request.form.get('name')
         new_description = request.form.get('description')
@@ -134,7 +134,7 @@ def update_task(task_id):
             return redirect(url_for('task.update_task', task_id = task_id))
         # Conflito de horário: Verifica se o novo horário de início
         # ou fim da tarefa conflita com outras tarefas do usuário
-        conflicting_tasks = Task.query.filter(
+        conflicting_tasks = db.session.query(Task).filter(
             Task.is_active == True,
             Task.user_id == session['user_id'],
             Task.date == new_date,
@@ -196,8 +196,8 @@ def delete_task(task_id):
     """
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
-    user = User.query.get(session['user_id'])
-    task = Task.query.get_or_404(task_id)
+    user = db.session.get(User, session['user_id'])
+    task = db.session.get(Task, task_id)
     task.is_active = False  # Marcar a tarefa como inativa em vez de deletar
     db.session.add(task)
     # Cria um registro de histórico para a exclusão da tarefa
@@ -223,15 +223,16 @@ def complete_task(task_id):
     """
     if 'user_id' not in session:
         return redirect(url_for('user.dashboard'))
-    task = Task.query.get_or_404(task_id)
-    user_id = task.user_id
-    user = User.query.get(user_id)
+    task = db.session.get(Task, task_id)
+    user = db.session.get(User, session['user_id'])
 
     if not task.is_active:
         flash('Não é possível concluir uma tarefa inativa.', 'error')
         return redirect(url_for('user.dashboard'))
     today = date.today()
-    execution_conflict = Executions.query.filter_by(rotina_id=task_id, date=today).first()
+    execution_conflict = db.session.query(Executions).filter_by(
+        rotina_id=task_id, date=today
+    ).first()
     if execution_conflict:
         flash('Esta tarefa já foi concluída hoje.', 'error')
         return redirect(url_for('user.dashboard'))
