@@ -37,6 +37,11 @@ class ProductionConfig(Config):
     if(SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://")):
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI or "sqlite:///:memory:"
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {
+            "options": "-c search_path=db_rotinas,public"
+        }
+    }
 
 config_by_name = {
     "development": DevelopmentConfig,
