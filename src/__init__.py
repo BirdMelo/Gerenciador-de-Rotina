@@ -7,16 +7,20 @@ configurar as extensões e registrar os blueprints.
 import os
 from flask import Flask, render_template
 from src.config import Config
+from src.config import config_by_name
 from .extentions import db, migrate
 
 def create_app(test_config=None):
     """Cria e configura a aplicação Flask."""
     app = Flask(__name__)
     if test_config is None:
-        app.config.from_object(Config)
+        env_name = os.getenv("FLASK_ENV", "development")
+        app.config.from_object(config_by_name[env_name])
     else:
         app.config.update(test_config)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') or 'test-key'
+
+    if not app.config.get('SECRET_KEY'):
+        app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') or 'test-key'
 
     # inicializa ORM e migrations
     db.init_app(app)
