@@ -10,6 +10,11 @@ jobs:
   validacao-completa:
     runs-on: ubuntu-latest
 
+    env:
+      FLASK_ENV: testing
+      SECRET_KEY: test-secret-key
+      TOKEN-FERIADO: test-token
+
     steps:
     # 1. Instalação/preparação do ambiente
     - name: Checkout do código
