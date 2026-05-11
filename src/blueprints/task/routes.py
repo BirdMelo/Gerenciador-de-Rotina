@@ -267,5 +267,5 @@ def feriados():
     token = current_app.config['TOKEN_FERIADO']
     resp = http_request.get(f'https://api.invertexto.com/v1/holidays/{year}',
                              params={'token': token, 'state': 'DF'},
-                             timeout=10)
+                             timeout=30)
     return jsonify(resp.json())
