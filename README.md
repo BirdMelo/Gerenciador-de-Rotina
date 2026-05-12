@@ -250,9 +250,10 @@ Ou executar no terminal, dentro do ambiente `(venv_desenvolvimento)` o comando a
 python run.py
 ```
 ---
-**Versão Atual**: 2.4.0
+**Versão Atual**: 2.4.1
 
 **Autores**: João Pedro de Melo Naves
 
 **Link do Repositório**: [Sistema de Gerenciamento de Rotinas Pessoais](https://github.com/BirdMelo/CEUB-DevWeb-Avaliacao)
+
 **Deploy**: [gerenciamento-de-rotina.onrender.com](https://gerenciador-de-rotina.onrender.com)
