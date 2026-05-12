@@ -25,7 +25,7 @@ O foco central da aplicação é garantir a consistência dos dados do usuário 
 
 #### Backend & Framework
 
-* **Python (3.8+)**: Linguagem de programação pricipal do projeto;
+* **Python (3.8+)**: Linguagem de programação principal do projeto;
 * **Flask**: Microframework web utilizado para construir a aplicação, gerenciar as rotas e a lógica do servidor;
 * **JinJa2 & Werkzeug**: Motores base do Flask utilizados para renderizar as páginas HTML de forma dinâmica.
 
@@ -35,10 +35,11 @@ O foco central da aplicação é garantir a consistência dos dados do usuário 
 * **Flask-SQLAlchemy**: Ferramenta de ORM (Object-Relational Mapping) para interagir com o banco de dados usando código Python em vez de comandos SQL puros;
 * **Flask-Migrate/Alembic**: Gerenciadores de migração para manter o histórico de alterações das tabelas do banco de dados;
 * **SQLite**: Utilizado em memória (`:memory:`) exclusivamente para rodar os testes automatizados.
+* **PostgreSQL & Supabase**: Banco de dados em nuvem como Data Base de produção funcionando no website.
 
 #### Segurança & Configuração
 * **Cryptography**: Biblioteca de segurança utilizada para gerar os hashes e proteger as senhas dos usuários;
-* **Python-detenv**: Gerenciador de variáveis de ambiente para esconder dados sensíveis (como senhas do banco de dados) no arquivo `.env`.
+* **Python-dotenv**: Gerenciador de variáveis de ambiente para esconder dados sensíveis (como senhas do banco de dados) no arquivo `.env`.
 
 #### Qualidade de Código & Testes
 * **Pylint**: Ferramentas de análise estática (Linter) para garantir que o código siga as boas práticas e o padrão internacional PEP 8;
@@ -47,9 +48,63 @@ O foco central da aplicação é garantir a consistência dos dados do usuário 
 #### DevOps & Infraestrutura
 * **Github Action**: Plataforma de CI/CD configurada para rodar a esteira de Integração Contínua (instalação, linting e testes) a cada novo push ou pull request;
 * **Setuptools & Pip**: Ferramentas de empacotamento e gerenciamento de dependências (`pyproject.toml` e `requirements.txt`).
+* **Render**: Site de hospedagem de repositórios escolhida para deploy do projeto por sua facilidade com projetos Flask
 
 #### Frontend
 * **HTML/CSS**: Estruturação e estilização das telas do sistema, [/templates](/src/templates/) e [/static](/src/static/)
+* **JavaScript**: Responsável pela interatividade do dashboard, incluindo a inicialização do calendário, requisições à API de feriados via `fetch`, e manipulação do DOM para exibição dos modais;
+* **FullCalendar (v6.1.11)**: Biblioteca JavaScript utilizada para renderizar o calendário anual interativo no dashboard. Carregada via CDN, é configurada com localização em português (`pt-br`) e customizada com indicadores visuais por dia e abertura de modais ao clicar em uma data.
+
+
+#### Árvore de pastas
+```
+Gerenciador-de-Rotina/
+├── src/
+│   ├── blueprints/
+│   │   ├── home/
+│   │   │   ├── __init__.py
+│   │   │   └── routes.py
+│   │   ├── user/
+│   │   │   ├── __init__.py
+│   │   │   └── routes.py
+│   │   └── task/
+│   │       ├── __init__.py
+│   │       └── routes.py
+│   ├── static/
+│   │   ├── css/
+│   │   │   ├── root.css
+│   │   │   ├── errors/
+│   │   │   ├── task/
+│   │   │   └── user/
+│   │   ├── js/
+│   │   │   └── user/
+│   │   │       └── dashboard.js
+│   │   └── img/
+│   │       └── logo-ceub.png
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── errors/
+│   │   │   └── 404.html
+│   │   ├── home/
+│   │   │   └── home.html
+│   │   ├── task/
+│   │   │   ├── edit.html
+│   │   │   └── register.html
+│   │   └── user/
+│   │       ├── dashboard.html
+│   │       ├── login.html
+│   │       ├── register.html
+│   │       └── update.html
+│   ├── extentions.py
+│   └── models.py
+├── tests/
+│   ├── conftest.py
+│   ├── test_integration.py
+│   ├── test_models.py
+│   └── test_routes.py
+├── config.py
+└── requirements.txt
+```
 
 ## Explicação das Tabelas
 
@@ -86,7 +141,7 @@ erDiagram
         string description
         time startTime
         time endTime
-        enum weakday
+        date date
         boolean is_active
         int user_id FK
     }
@@ -119,6 +174,7 @@ erDiagram
 * **create (/task/create)**: página para fazer cadastro da rotina
 * **update (/task/update)**: página para editar a rotina
 * **delete (/task/delete/{int:task_id})**: página para deletar rotina
+* **feriados (/task/feriados)**: uma rota de API que retorna um JSON com todos os feriados do ano
 ## Explicação das Regras de Negócio
 
 O sistema foi desenhado para garantir a consistência no acompanhamento das rotinas e manter um registro confiável de auditoria. As principais regras de negócio implementadas são:
@@ -137,9 +193,18 @@ O sistema foi desenhado para garantir a consistência no acompanhamento das roti
 4. **Integridade Relacional (Exclusão Segura):**
    * Para evitar registros "órfãos" no banco de dados, a exclusão de um usuário não pode ser feita de forma arbitrária.
    * Ao deletar um usuário, o sistema deve garantir que o histórico de ações atrelado a ele seja devidamente tratado ou limpo primeiro, respeitando as chaves estrangeiras (Foreign Keys).
-## Issue de feriados
-Atualização da aplicação para ter uma API que fornece todos os feriados e pontos facutativos do Brasil, utilizando a api [invertexto](https://api.invertexto.com/).
-A API fornece os dias e nomes dos feriados/facutativos que serão utilizados para mudar a aparência do dia para indicar que é um dia com feriado.
+
+## Calendário e API de Feriados
+Atualização da aplicação substituindo a listagem semanal de rotinas por um calendário anual interativo, permitindo que o usuário visualize e gerencie suas rotinas em datas específicas ao longo do ano.
+
+### Calendário
+Implementado com a biblioteca **FullCalendar**, o calendário exibe indicadores visuais nos dias com rotinas agendadas. Ao clicar em um dia, um modal é exibido com todas as atividades agendadas para aquela data, com opções de edição e exclusão.
+
+### API de Feriados
+Integração com a API [Invertexto](https://api.invertexto.com/) para exibição dos feriados e pontos facultativos nacionais diretamente no calendário. Os feriados são destacados em vermelho e os facultativos em laranja, diferenciando-os visualmente das rotinas do usuário.
+
+A chave de acesso à API é armazenada como variável de ambiente (`TOKEN_FERIADO`) e a comunicação é feita por uma rota proxy no servidor, garantindo que a chave nunca seja exposta no frontend.
+
 ## Instruções para Execução do Projeto
 ### Preparação de Ambiente
 Para a preparação do ambiente, copie os códigos abaixo no terminal da IDE:
@@ -157,12 +222,18 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ### Criação do arquivo `.env`
 É necessario a criação de um arquivo `.env` para configuração do banco de dados.
 Crie uma um arquivo com o nome `.env` e coloquei as seguintes variáveis:
+#### Variáveis padrões
+* SECRET_KEY = {chave_secreta}
+* TOKEN_FERIADO={chave_da_api}
+#### Variáveis de desenvolvimento
 * DB_USER = {nome_do_perfil_do_usuário}
 * DB_PASSWORD = {senha_de_acesso}
 * DB_HOST = localhost
 * DB_PORT = 3306 (ou outra porta configurada)
 * DB_NAME = {nome_do_db}
-* SECRET_KEY = {chave_secreta}
+#### Variáveis de produção
+* FLASK_ENV= production ou development
+* DATABASE_URL=postgresql://...
 
 ### Bibliotecas a serem baixadas
 As bibliotecas que serão baixadas no projeto estarão disponíveis no arquivo [requirement.txt](/requirements.txt)
@@ -179,8 +250,9 @@ Ou executar no terminal, dentro do ambiente `(venv_desenvolvimento)` o comando a
 python run.py
 ```
 ---
-**Versão Atual**: 2.3.3
+**Versão Atual**: 2.4.0
 
-**Autores**: João Pedro de Melo Naves, Vítor Camargo
+**Autores**: João Pedro de Melo Naves
 
 **Link do Repositório**: [Sistema de Gerenciamento de Rotinas Pessoais](https://github.com/BirdMelo/CEUB-DevWeb-Avaliacao)
+**Deploy**: [gerenciamento-de-rotina.onrender.com](https://gerenciador-de-rotina.onrender.com)
